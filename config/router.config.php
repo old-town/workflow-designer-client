@@ -23,7 +23,7 @@ return [
                             'route' => 'view',
                             'defaults' => [
                                 'controller' => WorkflowDesignerController::class,
-                                'action' => 'index'
+                                'action' => 'develop'
                             ]
                         ],
                     ]
