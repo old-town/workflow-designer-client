@@ -21,7 +21,8 @@
     "php": ">=5.5.0",
     "zendframework/zend-modulemanager": "~2.4.0",
     "zendframework/zend-mvc": "~2.4.0",
-    "zendframework/zend-servicemanager": "~2.4.0"
+    "zendframework/zend-servicemanager": "~2.4.0",
+    "old-town/workflow-designer-js": "*"
   },
   "require-dev": {
     "ext-curl": "*",
@@ -54,5 +55,11 @@
     "classmap": [
       "./test/phpunit/Bootstrap.php"
     ]
-  }
+  },
+  "repositories": [
+    {
+      "type": "vcs",
+      "url": "git@github.com:old-town/workflow-designer-js.git"
+    }
+  ]
 }
