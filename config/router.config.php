@@ -19,11 +19,13 @@ return [
                 'child_routes' => [
                     'view' => [
                         'type' => 'Literal',
-                        'route' => '/view',
-                        'defaults' => [
-                            'controller' => WorkflowDesignerController::class,
-                            'action' => 'index'
-                        ]
+                        'options' => [
+                            'route' => 'view',
+                            'defaults' => [
+                                'controller' => WorkflowDesignerController::class,
+                                'action' => 'index'
+                            ]
+                        ],
                     ]
                 ]
             ]

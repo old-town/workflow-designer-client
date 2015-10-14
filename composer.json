@@ -42,7 +42,10 @@
   "autoload": {
     "psr-4": {
       "OldTown\\Workflow\\Designer\\Client\\": "src/"
-    }
+    },
+    "classmap": [
+      "./Module.php"
+    ]
   },
   "autoload-dev": {
     "psr-4": {

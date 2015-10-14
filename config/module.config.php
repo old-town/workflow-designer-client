@@ -5,8 +5,12 @@
  */
 namespace OldTown\Workflow\Designer\Client;
 
-$config = [];
+$config = [
+];
+
+
 return array_merge_recursive(
+    include __DIR__ . '/view.config.php',
     include __DIR__ . '/router.config.php',
     include __DIR__ . '/controller.config.php',
     $config
