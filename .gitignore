@@ -18,3 +18,13 @@ temp/
 # Legacy ZF1
 demos/
 extras/documentation
+
+.idea
+
+phpunit.xml
+
+.phpstorm.meta.php
+
+composer.lock
+autoload_classmap.php
+template_map.php

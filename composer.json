@@ -1,0 +1,58 @@
+{
+  "name": "old-town/workflow-designer-client",
+  "description": "workflow designer",
+  "type": "library",
+  "keywords": [
+    "zf2",
+    "workflow",
+    "designer",
+    "client",
+    "module",
+    "zf2"
+  ],
+  "license": "GPL-3.0",
+  "authors": [
+    {
+      "name": "Malofeykin Andrey",
+      "email": "and-rey2@yandex.ru"
+    }
+  ],
+  "require": {
+    "php": ">=5.5.0",
+    "zendframework/zend-modulemanager": "~2.4.0",
+    "zendframework/zend-mvc": "~2.4.0",
+    "zendframework/zend-servicemanager": "~2.4.0"
+  },
+  "require-dev": {
+    "ext-curl": "*",
+    "fabpot/php-cs-fixer": "1.9.1",
+    "phpunit/phpunit": "4.7.7",
+    "phpunit/phpcov": "2.0.1",
+    "zendframework/zend-loader": "~2.4.0",
+    "zendframework/zend-test": "~2.4.0",
+    "zendframework/zend-serializer": "~2.4.0",
+    "zendframework/zend-log": "~2.4.0",
+    "zendframework/zend-i18n": "~2.4.0",
+    "zendframework/zend-json": "~2.4.0",
+    "zendframework/zend-config": "~2.4.0",
+    "zendframework/zend-version": "~2.4.0",
+    "zendframework/zend-text": "~2.4.0",
+    "satooshi/php-coveralls": "dev-master"
+  },
+  "autoload": {
+    "psr-4": {
+      "OldTown\\Workflow\\Designer\\Client": "src/"
+    },
+    "classmap": [
+      "./Module.php"
+    ]
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "OldTown\\Workflow\\Designer\\Client\\PhpUnit\\Test\\": "test/phpunit/tests"
+    },
+    "classmap": [
+      "./test/phpunit/Bootstrap.php"
+    ]
+  }
+}
