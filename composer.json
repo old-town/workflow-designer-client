@@ -22,7 +22,7 @@
     "zendframework/zend-modulemanager": "~2.4.0",
     "zendframework/zend-mvc": "~2.4.0",
     "zendframework/zend-servicemanager": "~2.4.0",
-    "old-town/workflow-designer-js": "*"
+    "old-town/workflow-designer-js": "dev-dev"
   },
   "require-dev": {
     "ext-curl": "*",
