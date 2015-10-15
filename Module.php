@@ -36,23 +36,8 @@ class Module implements
         $moduleRouteListener = new ModuleRouteListener();
         $moduleRouteListener->attach($eventManager);
 
-        $eventManager->attach('dispatch', [$this, 'setLayout']);
     }
 
-    /**
-     * @param $e
-     */
-    public function setLayout(MvcEvent $e)
-    {
-        $matches    = $e->getRouteMatch();
-        $controller = $matches->getParam('controller');
-        if (false === strpos($controller, __NAMESPACE__)) {
-            return;
-        }
-
-        $viewModel = $e->getViewModel();
-        $viewModel->setTemplate('old-town/workflow-designer/layout');
-    }
 
     /**
      * @return mixed

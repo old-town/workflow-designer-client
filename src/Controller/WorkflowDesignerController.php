@@ -19,7 +19,7 @@ class WorkflowDesignerController extends AbstractActionController
     /**
      * @return array
      */
-    public function developAction()
+    public function appAction()
     {
 
     }

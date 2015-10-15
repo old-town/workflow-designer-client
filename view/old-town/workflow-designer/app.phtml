@@ -1,0 +1,16 @@
+<?php /** @var Zend\View\Renderer\PhpRenderer $this */  ?>
+<?php $this->inlineScript()->setAllowArbitraryAttributes(true) ?>
+
+<?php $this->inlineScript()->prependFile(
+    sprintf('%sjs/libs/require/require.js', $this->url('assets-workflow-designer')),
+    'text/javascript',
+    [
+        'data-main' => sprintf('%sjs/app.js', $this->url('assets-workflow-designer')),
+    ]
+);
+?>
+
+<div class="workflow-designer-layout">
+
+
+</div>

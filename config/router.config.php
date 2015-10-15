@@ -13,21 +13,27 @@ return [
             'workflow-designer' => [
                 'type' => 'Literal',
                 'options' => [
-                    'route' => '/',
+                    'route' => '/workflow/designer/',
                 ],
                 'may_terminate' => true,
                 'child_routes' => [
                     'view' => [
                         'type' => 'Literal',
                         'options' => [
-                            'route' => 'view',
+                            'route' => 'app',
                             'defaults' => [
                                 'controller' => WorkflowDesignerController::class,
-                                'action' => 'develop'
+                                'action' => 'app'
                             ]
                         ],
                     ]
                 ]
+            ],
+            'assets-workflow-designer' => [
+                'type' => 'Literal',
+                'options' => [
+                    'route' => '/assets/workflow/designer/',
+                ],
             ]
         ]
     ]
