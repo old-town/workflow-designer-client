@@ -56,11 +56,5 @@
     "classmap": [
       "./test/phpunit/Bootstrap.php"
     ]
-  },
-  "repositories": [
-    {
-      "type": "vcs",
-      "url": "git@github.com:old-town/workflow-designer-js.git"
-    }
-  ]
+  }
 }
