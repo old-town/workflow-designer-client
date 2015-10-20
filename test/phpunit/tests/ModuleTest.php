@@ -14,7 +14,6 @@ use Zend\Test\PHPUnit\Controller\AbstractHttpControllerTestCase;
  */
 class ModuleTest extends AbstractHttpControllerTestCase
 {
-
     public function testLoadModule()
     {
         /** @noinspection PhpIncludeInspection */

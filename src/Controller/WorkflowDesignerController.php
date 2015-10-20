@@ -5,7 +5,6 @@
  */
 namespace OldTown\Workflow\Designer\Client\Controller;
 
-
 use Zend\Mvc\Controller\AbstractActionController;
 
 
@@ -21,6 +20,5 @@ class WorkflowDesignerController extends AbstractActionController
      */
     public function appAction()
     {
-
     }
 }

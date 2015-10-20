@@ -35,5 +35,4 @@ class Paths
 
         return static::$pathToAppConfig;
     }
-
 }
