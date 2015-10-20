@@ -1,25 +1,14 @@
 require.config({
     paths: {
-        jquery: 'libs/jquery/jquery',
-        underscore: 'libs/underscore/underscore',
-        backbone: 'libs/backbone/backbone',
         text: 'libs/require/text',
-        jsPlumb: 'libs/jsPlumb/jsPlumb'
+        jquery: 'libs/jquery/jquery',
+        lodash: 'libs/lodash/lodash',
+        backbone: 'libs/backbone/backbone',
+        joint: 'libs/joint/joint'
     },
-    shim: {
-        'jquery': {
-            exports: '$'
-        },
-        jsPlumb: {
-            deps: ['jquery'],
-            exports: 'jsPlumb'
-        },
-        'underscore': {
-            exports: '_'
-        },
-        'backbone': {
-            deps: ['underscore', 'jquery'],
-            exports: 'Backbone'
+    map: {
+        '*': {
+            'underscore': 'lodash'
         }
     }
 

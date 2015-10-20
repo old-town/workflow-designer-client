@@ -2,9 +2,9 @@ define([
     'jquery',
     'underscore',
     'backbone',
-    'jsPlumb',
+    'joint',
     'text!templates/app-layout.html'
-], function($, _, Backbone, jsPlumb, appLayout){
+], function($, _, Backbone, joint, appLayout){
 
 
 
@@ -35,141 +35,163 @@ define([
          */
         renderAppLayout: function()
         {
-
-
             $(this.el).html(this.appLayout());
 
-            // setup some defaults for jsPlumb.
-            var instance = jsPlumb.getInstance({
-                Endpoint: [
-                    "Dot",
-                    {
-                        radius: 2
-                    }
-                ],
-                Connector:"StateMachine",
-                HoverPaintStyle: {
-                    strokeStyle:
-                        "#1e8151",
-                    lineWidth: 2
-                },
-                ConnectionOverlays: [
-                    [
-                        "Arrow",
-                        {
-                            location: 1,
-                            id: "arrow",
-                            length: 14,
-                            foldback: 0.8
+            var paperEl = $('.paper', this.el);
+
+
+            var graph = new joint.dia.Graph();
+
+            var paper = new joint.dia.Paper({
+                el: paperEl,
+                width: 800,
+                height: 600,
+                gridSize: 1,
+                model: graph
+            });
+
+
+
+
+            var uml = joint.shapes.uml;
+
+            var states = {
+
+                s0: new uml.StartState({
+                    position: { x:20  , y: 20 },
+                    size: { width: 30, height: 30 },
+                    attrs: {
+                        'circle': {
+                            fill: '#4b4a67',
+                            stroke: 'none'
                         }
-                    ],
-                    [
-                        "Label",
-                        {
-                            label: "FOO",
-                            id: "label",
-                            cssClass: "aLabel"
-                        }
-                    ]
-                ],
-                Container: "canvas"
-            });
-
-            instance.registerConnectionType(
-                "basic",
-                {
-                    anchor:"Continuous",
-                    connector:"StateMachine"
-                }
-            );
-            //var canvas = document.getElementById("canvas");
-            var windows = jsPlumb.getSelector(".statemachine-demo .w");
-
-            // bind a click listener to each connection; the connection is deleted. you could of course
-            // just do this: jsPlumb.bind("click", jsPlumb.detach), but I wanted to make it clear what was
-            // happening.
-            instance.bind("click", function (c) {
-                instance.detach(c);
-            });
-
-            // bind a connection listener. note that the parameter passed to this function contains more than
-            // just the new connection - see the documentation for a full list of what is included in 'info'.
-            // this listener sets the connection's internal
-            // id as the label overlay's text.
-            instance.bind("connection", function (info) {
-                info.connection.getOverlay("label").setLabel(info.connection.id);
-            });
-
-            instance.bind("connectionDetach", function() {
-                alert("DETACH!")
-            })
-
-            //// bind a double click listener to "canvas"; add new node when this occurs.
-            //jsPlumb.on(canvas, "dblclick", function(e) {
-            //    newNode(e.offsetX, e.offsetY);
-            //});
-
-            //
-            // initialise element as connection targets and source.
-            //
-            var initNode = function(el) {
-
-                // initialise draggable elements.
-                instance.draggable(el);
-
-                instance.makeSource(el, {
-                    filter: ".ep",
-                    anchor: "Continuous",
-                    connectorStyle: { strokeStyle: "#5c96bc", lineWidth: 2, outlineColor: "transparent", outlineWidth: 4 },
-                    maxConnections: 5,
-                    connectionType:"basic",
-                    onMaxConnections: function (info, e) {
-                        alert("Maximum connections (" + info.maxConnections + ") reached");
-                    },
-                    extract:{
-                        "action":"the-action"
                     }
-                });
+                }),
 
-                instance.makeTarget(el, {
-                    dropOptions: { hoverClass: "dragHover" },
-                    anchor: "Continuous",
-                    allowLoopback: true
-                });
+                s1: new uml.State({
+                    position: { x:100  , y: 100 },
+                    size: { width: 200, height: 100 },
+                    name: "state 1",
+                    events: ["entry / init()","exit / destroy()"],
+                    attrs: {
+                        '.uml-state-body': {
+                            fill: 'rgba(48, 208, 198, 0.1)',
+                            stroke: 'rgba(48, 208, 198, 0.5)',
+                            'stroke-width': 1.5
+                        },
+                        '.uml-state-separator': {
+                            stroke: 'rgba(48, 208, 198, 0.4)'
+                        }
+                    }
+                }),
 
-                // this is not part of the core demo functionality; it is a means for the Toolkit edition's wrapped
-                // version of this demo to find out about new nodes being added.
-                //
-                instance.fire("jsPlumbDemoNodeAdded", el);
+                s2: new uml.State({
+                    position: { x:400  , y: 200 },
+                    size: { width: 300, height: 300 },
+                    name: "state 2",
+                    events: ["entry / create()","exit / kill()","A / foo()","B / bar()"],
+                    attrs: {
+                        '.uml-state-body': {
+                            fill: 'rgba(48, 208, 198, 0.1)',
+                            stroke: 'rgba(48, 208, 198, 0.5)',
+                            'stroke-width': 1.5
+                        },
+                        '.uml-state-separator': {
+                            stroke: 'rgba(48, 208, 198, 0.4)'
+                        }
+                    }
+                }),
+
+                s3: new uml.State({
+                    position: { x:130  , y: 400 },
+                    size: { width: 160, height: 60 },
+                    name: "state 3",
+                    events: ["entry / create()","exit / kill()"],
+                    attrs: {
+                        '.uml-state-body': {
+                            fill: 'rgba(48, 208, 198, 0.1)',
+                            stroke: 'rgba(48, 208, 198, 0.5)',
+                            'stroke-width': 1.5
+                        },
+                        '.uml-state-separator': {
+                            stroke: 'rgba(48, 208, 198, 0.4)'
+                        }
+                    }
+                }),
+
+                s4: new uml.State({
+                    position: { x:530  , y: 400 },
+                    size: { width: 160, height: 50 },
+                    name: "sub state 4",
+                    events: ["entry / create()"],
+                    attrs: {
+                        '.uml-state-body': {
+                            fill: 'rgba(48, 208, 198, 0.1)',
+                            stroke: 'rgba(48, 208, 198, 0.5)',
+                            'stroke-width': 1.5
+                        },
+                        '.uml-state-separator': {
+                            stroke: 'rgba(48, 208, 198, 0.4)'
+                        }
+                    }
+                }),
+
+                se: new uml.EndState({
+                    position: { x:750  , y: 550 },
+                    size: { width: 30, height: 30 },
+                    attrs: {
+                        '.outer': {
+                            stroke: "#4b4a67",
+                            'stroke-width': 2
+                        },
+                        '.inner': {
+                            fill: '#4b4a67'
+                        }
+                    }
+                })
+
             };
 
-            var newNode = function(x, y) {
-                var d = document.createElement("div");
-                var id = jsPlumbUtil.uuid();
-                d.className = "w";
-                d.id = id;
-                d.innerHTML = id.substring(0, 7) + "<div class=\"ep\"></div>";
-                d.style.left = x + "px";
-                d.style.top = y + "px";
-                instance.getContainer().appendChild(d);
-                initNode(d);
-                return d;
+            graph.addCells(states);
+
+            states.s2.embed(states.s4);
+
+            var linkAttrs =  {
+                'fill': 'none',
+                'stroke-linejoin': 'round',
+                'stroke-width': '2',
+                'stroke': '#4b4a67'
             };
 
-            //// suspend drawing and initialise.
-            instance.batch(function () {
-                for (var i = 0; i < windows.length; i++) {
-                    initNode(windows[i], true);
-                }
-                // and finally, make a few connections
-                instance.connect({ source: "opened", target: "phone1", type:"basic" });
-                instance.connect({ source: "phone1", target: "phone1", type:"basic" });
-                instance.connect({ source: "phone1", target: "inperson", type:"basic" });
-            });
-            //
-            //jsPlumb.fire("jsPlumbDemoLoaded", instance);
-            //newNode(100, 100);
+            var transitons = [
+                new uml.Transition({
+                    source: { id: states.s0.id },
+                    target: { id: states.s1.id },
+                    attrs: {'.connection': linkAttrs }
+                }),
+                new uml.Transition({
+                    source: { id: states.s1.id },
+                    target: { id: states.s2.id },
+                    attrs: {'.connection': linkAttrs }
+                }),
+                new uml.Transition({
+                    source: { id: states.s1.id },
+                    target: { id: states.s3.id },
+                    attrs: {'.connection': linkAttrs }
+                }),
+                new uml.Transition({
+                    source: { id: states.s3.id },
+                    target: { id: states.s4.id },
+                    attrs: {'.connection': linkAttrs }
+                }),
+                new uml.Transition({
+                    source: { id: states.s2.id },
+                    target: { id: states.se.id },
+                    attrs: {'.connection': linkAttrs }
+                })
+            ];
 
+            graph.addCells(transitons);
         }
 
 

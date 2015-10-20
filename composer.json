@@ -38,7 +38,8 @@
     "zendframework/zend-config": "~2.4.0",
     "zendframework/zend-version": "~2.4.0",
     "zendframework/zend-text": "~2.4.0",
-    "satooshi/php-coveralls": "dev-master"
+    "satooshi/php-coveralls": "dev-master",
+    "widmogrod/zf2-assetic-module": "dev-master"
   },
   "autoload": {
     "psr-4": {

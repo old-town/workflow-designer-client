@@ -1,6 +1,8 @@
 <?php /** @var Zend\View\Renderer\PhpRenderer $this */  ?>
 <?php $this->inlineScript()->setAllowArbitraryAttributes(true) ?>
 
+<?php $this->headLink()->prependStylesheet(sprintf('%scss/libs/joint/joint.css', $this->url('assets-workflow-designer'))) ?>
+
 <?php $this->inlineScript()->prependFile(
     sprintf('%sjs/libs/require/require.js', $this->url('assets-workflow-designer')),
     'text/javascript',

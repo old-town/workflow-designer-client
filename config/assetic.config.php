@@ -23,10 +23,11 @@ return [
                             'workflow/designer/js/libs/require/*',
                             'workflow/designer/js/libs/backbone/*',
                             'workflow/designer/js/libs/jquery/*',
-                            'workflow/designer/js/libs/jsPlumb/*',
-                            'workflow/designer/js/libs/underscore/*',
+                            'workflow/designer/js/libs/lodash/*',
+                            'workflow/designer/js/libs/joint/*',
 
 
+                            'workflow/designer/css/libs/joint/*',
 
 
                             'workflow/designer/js/*',
