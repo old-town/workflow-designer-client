@@ -1,6 +1,6 @@
 default:
   autoload:
-    '': %paths.base%/test/behat/bootstrap/
+    - %paths.base%/test/behat/bootstrap/
   suites:
     stateMachine:
       paths: [%paths.base%/test/behat/features/state-machine]
