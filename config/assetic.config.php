@@ -5,8 +5,7 @@
  */
 namespace OldTown\Workflow\Designer\Client;
 
-use OldTown\Workflow\Designer\Client\Controller\WorkflowDesignerController;
-use OldTown\Workflow\Designer\Client\Module;
+
 
 return [
     'assetic_configuration' => [

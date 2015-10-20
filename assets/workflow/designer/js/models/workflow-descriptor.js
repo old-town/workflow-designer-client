@@ -4,5 +4,5 @@ define(['underscore', 'backbone'], function(_, Backbone) {
 
         }
     });
-    return TodoModel;
+    return WorkflowDescriptor;
 });

@@ -1,20 +1,30 @@
-require.config({
-    paths: {
-        jquery: 'libs/jquery/jquery',
-        underscore: 'libs/underscore/underscore',
-        backbone: 'libs/backbone/backbone',
-        text: 'libs/require/text'
-    }
-
-});
-
-
-require(['views/app', 'jquery'], function(AppView, $){
-
-    var app_view = new AppView({
-        el: $('.workflow-designer-layout')
+define([
+    'jquery',
+    'underscore',
+    'backbone',
+    'views/AppView'
+], function ($, _, Backbone, AppView) {
+    var AppRouter = Backbone.Router.extend({
+        routes: {
+            '':        'root',
+            '__debug': 'debug'
+        }
     });
+    var initialize = function(initConfig){
+        var config = _.isObject(initConfig) ? initConfig : {};
+        var router = new AppRouter();
+
+        var routeRootHandler = function(){
+            var appViewConfig = _.isObject(config['appViewConfig']) ? config['appViewConfig'] : {};
+            new AppView(appViewConfig);
+        };
+        router.on('route:root', routeRootHandler);
 
 
+        Backbone.history.start();
+    };
 
+    return {
+        initialize: initialize
+    };
 });
