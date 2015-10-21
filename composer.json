@@ -50,6 +50,14 @@
     {
       "type": "vcs",
       "url": "git@github.com:old-town/workflow-designer-server.git"
+    },
+    {
+      "type": "vcs",
+      "url": "git@github.com:old-town/old-town-workflow.git"
+    },
+    {
+      "type": "vcs",
+      "url": "git@github.com:old-town/old-town-propertyset.git"
     }
   ],
   "autoload": {
