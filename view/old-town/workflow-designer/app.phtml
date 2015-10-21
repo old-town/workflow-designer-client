@@ -2,15 +2,19 @@
 <?php $this->inlineScript()->setAllowArbitraryAttributes(true) ?>
 
 <?php $this->headLink()->prependStylesheet(sprintf('%scss/libs/joint/joint.css', $this->url('assets-workflow-designer'))) ?>
-
-<?php $this->inlineScript()->prependFile(
-    sprintf('%sjs/libs/require/require.js', $this->url('assets-workflow-designer')),
-    'text/javascript',
-    [
-        'data-main' => sprintf('%sjs/bootstrap.js', $this->url('assets-workflow-designer')),
-    ]
-);
-?>
+<?php $this->inlineScript()->prependFile(sprintf('%sjs/libs/require/require.js', $this->url('assets-workflow-designer')))?>
+<?php $this->inlineScript()->appendScript(sprintf("
+    require(['%s'], function(bootstrap){
+        bootstrap.init({
+            'baseUrl': '%s',
+            'restBaseUrl': '%s'
+        });
+    });
+",
+    sprintf('%sjs/bootstrap.js', $this->url('assets-workflow-designer')),
+    sprintf('%sjs', $this->url('assets-workflow-designer')),
+    $this->url('workflow-designer/api'))
+)?>
 
 <div class="workflow-designer-layout">
 

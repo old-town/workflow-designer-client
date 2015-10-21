@@ -26,6 +26,12 @@ return [
                                 'action' => 'app'
                             ]
                         ],
+                    ],
+                    'api' => [
+                        'type' => 'Literal',
+                        'options' => [
+                            'route' => 'api/',
+                        ]
                     ]
                 ]
             ],

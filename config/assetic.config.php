@@ -32,6 +32,7 @@ return [
 
                             'workflow/designer/js/*',
                             'workflow/designer/js/views/*',
+                            'workflow/designer/js/models/*',
 
                             'workflow/designer/js/templates/*',
                         ],

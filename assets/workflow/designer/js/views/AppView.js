@@ -3,8 +3,9 @@ define([
     'underscore',
     'backbone',
     'joint',
-    'text!templates/app-layout.html'
-], function($, _, Backbone, joint, appLayout){
+    'text!templates/app-layout.html',
+    'models/workflow-descriptor'
+], function($, _, Backbone, joint, appLayout, WorkflowDescriptor){
 
 
 
@@ -26,9 +27,17 @@ define([
          * Инициализация отображения приложения
          */
         initialize: function() {
+            WorkflowDescriptor.bind('read', this.readWorkflowDescriptorHandler);
+
             this.renderAppLayout();
 
+            (new WorkflowDescriptor).fetch();
         },
+
+        readWorkflowDescriptorHandler: function() {
+
+        },
+
 
         /**
          * Рендер layout приложения

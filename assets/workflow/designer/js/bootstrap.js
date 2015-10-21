@@ -1,24 +1,47 @@
-require.config({
-    paths: {
-        text: 'libs/require/text',
-        jquery: 'libs/jquery/jquery',
-        lodash: 'libs/lodash/lodash',
-        backbone: 'libs/backbone/backbone',
-        joint: 'libs/joint/joint'
-    },
-    map: {
-        '*': {
-            'underscore': 'lodash'
+define([], function() {
+
+    var bootstrap = {};
+    bootstrap.initRequireConfig = function(config){
+        var configRequire = {
+            paths: {
+                text: 'libs/require/text',
+                jquery: 'libs/jquery/jquery',
+                lodash: 'libs/lodash/lodash',
+                backbone: 'libs/backbone/backbone',
+                joint: 'libs/joint/joint',
+                conf: 'conf'
+            },
+            map: {
+                '*': {
+                    'underscore': 'lodash'
+                }
+            },
+            config: {
+                'conf': {
+                    'restBaseUrl': ''
+                }
+            }
+        };
+        if (config['baseUrl']) {
+            configRequire['baseUrl'] = config['baseUrl'];
         }
-    }
-
-});
-
-
-require(['jquery', 'app'], function($, App){
-    App.initialize({
-        'appViewConfig': {
-            'el': $('.workflow-designer-layout')
+        if (config['restBaseUrl']) {
+            configRequire['config']['conf']['restBaseUrl'] = config['restBaseUrl'];
         }
-    });
+
+        require.config(configRequire);
+    };
+    bootstrap.init = function(config) {
+        var conf = typeof config === 'object' ? config : {};
+        this.initRequireConfig(conf);
+        require(['jquery', 'app'], function($, App){
+            App.initialize({
+                'appViewConfig': {
+                    'el': $('.workflow-designer-layout')
+                }
+            });
+        });
+
+    };
+    return bootstrap;
 });
