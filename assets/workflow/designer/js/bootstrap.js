@@ -4,12 +4,16 @@ define([], function() {
     bootstrap.initRequireConfig = function(config){
         var configRequire = {
             paths: {
-                text: 'libs/require/text',
-                jquery: 'libs/jquery/jquery',
-                lodash: 'libs/lodash/lodash',
-                backbone: 'libs/backbone/backbone',
-                joint: 'libs/joint/joint',
-                conf: 'conf'
+                'text': 'libs/require/text',
+                'jquery': 'libs/jquery/jquery',
+                'jquery-xpath': 'libs/jquery/jquery.xpath',
+                'jquery-bootstrap': 'libs/bootstrap/bootstrap',
+                'lodash': 'libs/lodash/lodash',
+                'backbone': 'libs/backbone/backbone',
+                'backbone-associations': 'libs/backbone/backbone-associations',
+                'joint': 'libs/joint/joint',
+                'conf': 'conf',
+                'workflow-xml-to-json': 'service/workflow-xml-to-json'
             },
             map: {
                 '*': {
@@ -19,6 +23,11 @@ define([], function() {
             config: {
                 'conf': {
                     'restBaseUrl': ''
+                }
+            },
+            shim: {
+                'jquery-bootstrap': {
+                    deps: ["jquery"]
                 }
             }
         };
@@ -34,7 +43,7 @@ define([], function() {
     bootstrap.init = function(config) {
         var conf = typeof config === 'object' ? config : {};
         this.initRequireConfig(conf);
-        require(['jquery', 'app'], function($, App){
+        require(['jquery', 'jquery-bootstrap', 'app'], function($, jqueryBootstrap, App){
             App.initialize({
                 'appViewConfig': {
                     'el': $('.workflow-designer-layout')

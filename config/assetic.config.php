@@ -23,16 +23,20 @@ return [
                             'workflow/designer/js/libs/require/*',
                             'workflow/designer/js/libs/backbone/*',
                             'workflow/designer/js/libs/jquery/*',
+                            'workflow/designer/js/libs/bootstrap/*',
                             'workflow/designer/js/libs/lodash/*',
                             'workflow/designer/js/libs/joint/*',
 
 
                             'workflow/designer/css/libs/joint/*',
-
+                            'workflow/designer/css/libs/bootstrap/*',
+                            'workflow/designer/css/libs/fonts/*',
+                            'workflow/designer/css/app/*',
 
                             'workflow/designer/js/*',
                             'workflow/designer/js/views/*',
                             'workflow/designer/js/models/*',
+                            'workflow/designer/js/service/*',
 
                             'workflow/designer/js/templates/*',
                         ],

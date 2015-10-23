@@ -2,6 +2,8 @@
 <?php $this->inlineScript()->setAllowArbitraryAttributes(true) ?>
 
 <?php $this->headLink()->prependStylesheet(sprintf('%scss/libs/joint/joint.css', $this->url('assets-workflow-designer'))) ?>
+<?php $this->headLink()->prependStylesheet(sprintf('%scss/libs/bootstrap/bootstrap.css', $this->url('assets-workflow-designer'))) ?>
+<?php $this->headLink()->prependStylesheet(sprintf('%scss/app/app.css', $this->url('assets-workflow-designer'))) ?>
 <?php $this->inlineScript()->prependFile(sprintf('%sjs/libs/require/require.js', $this->url('assets-workflow-designer')))?>
 <?php $this->inlineScript()->appendScript(sprintf("
     require(['%s'], function(bootstrap){
