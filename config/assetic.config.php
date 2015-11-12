@@ -27,6 +27,19 @@ return [
                             'workflow/designer/js/libs/lodash/*',
                             'workflow/designer/js/libs/joint/*',
 
+                            'workflow/designer/js/libs/arbor/*',
+
+                            'workflow/designer/js/libs/uuid-js/*',
+
+
+
+
+
+
+
+
+
+
 
                             'workflow/designer/css/libs/joint/*',
                             'workflow/designer/css/libs/bootstrap/*',
@@ -36,7 +49,9 @@ return [
                             'workflow/designer/js/*',
                             'workflow/designer/js/views/*',
                             'workflow/designer/js/models/*',
+                            'workflow/designer/js/models/descriptor/*',
                             'workflow/designer/js/service/*',
+
 
                             'workflow/designer/js/templates/*',
                         ],

@@ -2,9 +2,9 @@ define([
     'underscore',
     'backbone',
     'conf',
-    'workflow-xml-to-json',
-    'models/step-descriptor',
-    'models/action-descriptor',
+    'service/workflow-xml-to-json',
+    'models/descriptor/step',
+    'models/descriptor/action',
     'jquery',
     'jquery-xpath',
     'backbone-associations'

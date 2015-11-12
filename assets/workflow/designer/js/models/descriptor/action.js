@@ -1,8 +1,8 @@
 define([
     'underscore',
     'backbone',
-    'models/unconditional-result-descriptor',
-    'models/result-descriptor',
+    'models/descriptor/unconditional-result',
+    'models/descriptor/result',
     'backbone-associations'
 ], function(_, Backbone, UnconditionalResult, Result) {
     var ActionDescriptor = Backbone.AssociatedModel.extend({

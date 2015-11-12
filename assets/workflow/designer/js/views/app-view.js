@@ -4,7 +4,7 @@ define([
     'backbone',
     'joint',
     'text!templates/app-layout.html',
-    'models/workflow-descriptor',
+    'models/descriptor/workflow',
     'views/uml-state-machine-view'
 ], function($, _, Backbone, joint, appLayout, WorkflowDescriptor, UmlStateMachineView){
 

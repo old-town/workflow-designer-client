@@ -1,10 +1,10 @@
-<?php /** @var Zend\View\Renderer\PhpRenderer $this */  ?>
+<?php /** @var Zend\View\Renderer\PhpRenderer $this */ ?>
 <?php $this->inlineScript()->setAllowArbitraryAttributes(true) ?>
 
 <?php $this->headLink()->prependStylesheet(sprintf('%scss/libs/joint/joint.css', $this->url('assets-workflow-designer'))) ?>
 <?php $this->headLink()->prependStylesheet(sprintf('%scss/libs/bootstrap/bootstrap.css', $this->url('assets-workflow-designer'))) ?>
 <?php $this->headLink()->prependStylesheet(sprintf('%scss/app/app.css', $this->url('assets-workflow-designer'))) ?>
-<?php $this->inlineScript()->prependFile(sprintf('%sjs/libs/require/require.js', $this->url('assets-workflow-designer')))?>
+<?php $this->inlineScript()->prependFile(sprintf('%sjs/libs/require/require.js', $this->url('assets-workflow-designer'))) ?>
 <?php $this->inlineScript()->appendScript(sprintf("
     require(['%s'], function(bootstrap){
         bootstrap.init({
@@ -13,12 +13,27 @@
         });
     });
 ",
-    sprintf('%sjs/bootstrap.js', $this->url('assets-workflow-designer')),
-    sprintf('%sjs', $this->url('assets-workflow-designer')),
-    $this->url('workflow-designer/api'))
-)?>
+        sprintf('%sjs/bootstrap.js', $this->url('assets-workflow-designer')),
+        sprintf('%sjs', $this->url('assets-workflow-designer')),
+        $this->url('workflow-designer/api'))
+) ?>
 
-<div class="workflow-designer-layout">
+
+<?php //$this->inlineScript()->appendFile(sprintf('%sjs/libs/jquery/jquery.js', $this->url('assets-workflow-designer'))) ?>
+<?php //$this->inlineScript()->appendFile(sprintf('%sjs/libs/arbor/etc.js', $this->url('assets-workflow-designer'))) ?>
+<?php //$this->inlineScript()->appendFile(sprintf('%sjs/libs/arbor/kernel.js', $this->url('assets-workflow-designer'))) ?>
+<?php //$this->inlineScript()->appendFile(sprintf('%sjs/libs/arbor/graphics/colors.js', $this->url('assets-workflow-designer'))) ?>
+<?php //$this->inlineScript()->appendFile(sprintf('%sjs/libs/arbor/graphics/primitives.js', $this->url('assets-workflow-designer'))) ?>
+<?php //$this->inlineScript()->appendFile(sprintf('%sjs/libs/arbor/graphics/graphics.js', $this->url('assets-workflow-designer'))) ?>
+<?php //$this->inlineScript()->appendFile(sprintf('%sjs/libs/arbor/tween/easing.js', $this->url('assets-workflow-designer'))) ?>
+<?php //$this->inlineScript()->appendFile(sprintf('%sjs/libs/arbor/tween/tween.js', $this->url('assets-workflow-designer'))) ?>
+<?php //$this->inlineScript()->appendFile(sprintf('%sjs/libs/arbor/physics/atoms.js', $this->url('assets-workflow-designer'))) ?>
+<?php //$this->inlineScript()->appendFile(sprintf('%sjs/libs/arbor/physics/physics.js', $this->url('assets-workflow-designer'))) ?>
+<?php //$this->inlineScript()->appendFile(sprintf('%sjs/libs/arbor/physics/system.js', $this->url('assets-workflow-designer'))) ?>
+<?php //$this->inlineScript()->appendFile(sprintf('%sjs/libs/arbor/dev.js', $this->url('assets-workflow-designer'))) ?>
+
+<div class="workflow-designer-layout container">
+
 
 
 </div>

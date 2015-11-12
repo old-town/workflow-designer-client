@@ -1,0 +1,14 @@
+.appContent {
+    height: 100%;
+    min-height: 100%;
+}
+
+html, body {
+    height: 100%;
+}
+
+.uml-layout, .workflow-designer-layout, .paper, .graph-viewport  {
+    height: 100%;
+    min-height: 100%;
+}
+

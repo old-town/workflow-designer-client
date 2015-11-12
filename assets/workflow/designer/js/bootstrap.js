@@ -13,7 +13,8 @@ define([], function() {
                 'backbone-associations': 'libs/backbone/backbone-associations',
                 'joint': 'libs/joint/joint',
                 'conf': 'conf',
-                'workflow-xml-to-json': 'service/workflow-xml-to-json'
+                'arbor': 'libs/arbor/arbor',
+                'uuid': 'libs/uuid-js/uuid'
             },
             map: {
                 '*': {
@@ -26,8 +27,18 @@ define([], function() {
                 }
             },
             shim: {
+                'jquery': {
+                    exports: 'jQuery'
+                },
                 'jquery-bootstrap': {
-                    deps: ["jquery"]
+                    deps: ['jquery']
+                },
+                'jquery-xpath': {
+                    deps: ['jquery']
+                },
+                'arbor': {
+                    deps: ['jquery'],
+                    exports: 'arbor'
                 }
             }
         };
