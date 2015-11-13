@@ -3,15 +3,62 @@ define([
     'underscore',
     'joint'
 ], function ($, _, joint) {
-
-
-    var Renderer = function (viewport) {
+    return function (viewport) {
         var graph;
+        var paper;
         var el = viewport;
-
         var particleSystem;
+        return {
+            initStateId: 'initState',
+            defaultStartStateConfig: {
+                size: {width: 30, height: 30},
+                attrs: {
+                    'circle': {
+                        fill: '#4b4a67',
+                        stroke: 'none'
+                    }
+                }
+            },
+            defaultStateConfig: {
+                size: {width: 80, height: 30},
+                attrs: {
+                    '.uml-state-body': {
+                        fill: 'rgba(48, 208, 198, 0.1)',
+                        stroke: 'rgba(48, 208, 198, 0.5)',
+                        'stroke-width': 1.5
+                    },
+                    '.uml-state-separator': {
+                        stroke: 'rgba(48, 208, 198, 0.4)'
+                    }
+                }
+            },
+            defaultConditionConfig: {
+                attrs: {
+                    text: {
+                        fill: '#ffffff',
+                        text: ' ',
+                        'letter-spacing': 0,
+                        style: {
+                            'text-shadow': '1px 0 1px'
+                        }
+                    },
+                    '.outer': {
+                        fill: 'white',
+                        stroke: 'rgba(48, 208, 198, 0.5)'
+                    }
+                }
+            },
+            defaultTransitionConfig: {
+                attrs: {
+                    '.connection': {
+                        'fill': 'none',
+                        'stroke-linejoin': 'round',
+                        'stroke-width': '2',
+                        'stroke': '#4b4a67'
+                    }
+                }
+            },
 
-        var that = {
             init: function (system) {
                 //начальная инициализация
                 particleSystem = system;
@@ -20,6 +67,23 @@ define([
                 particleSystem.screenPadding(80);
 
             },
+
+            buildInitStateId: function () {
+                return this.initStateId;
+            },
+
+            buildStateId: function (workflowStepId) {
+                return 'step_id_' + workflowStepId;
+            },
+
+            buildConditionalBlockId: function (conditionalNodeId) {
+                return 'condition_id_' + conditionalNodeId;
+            },
+
+            buildTransitionId: function (edgeId) {
+                return 'transition_id_' + edgeId;
+            },
+
             getGraph: function () {
                 if (graph) {
                     return graph;
@@ -29,7 +93,7 @@ define([
 
                 graph = new joint.dia.Graph();
 
-                var paper = new joint.dia.Paper({
+                paper = new joint.dia.Paper({
                     el: paperEl,
                     width: el.width(),
                     height: el.height(),
@@ -40,16 +104,98 @@ define([
                 return graph;
 
             },
+            getPaper: function() {
+                if (paper) {
+                    return paper;
+                }
+                this.getGraph();
+
+                return paper;
+            },
 
 
             redraw: function () {
-                //действия при перересовке
-                //ctx.fillStyle = "white"; //белым цветом
-                //ctx.fillRect(0, 0, canvas.width, canvas.height); //закрашиваем всю область
+                this.redrawNode();
+                this.redrawEdge();
+            },
+
+            getCellByNode: function(node) {
+                var cellId;
+                switch (node.data.type) {
+                    case 'initState':
+                    {
+                        cellId = this.buildInitStateId();
+                        break;
+                    }
+                    case 'state':
+                    {
+                        var workflowStepId = node.data.model.get('id');
+                        cellId = this.buildStateId(workflowStepId);
+                        break;
+                    }
+                    case 'condition':
+                    {
+                        cellId = this.buildConditionalBlockId(node._id);
+                        break;
+                    }
+                    default :{
+                        throw new Error('Undefined node type:' + node.data.type);
+                    }
+                }
+                return this.getGraph().getCell(cellId);
+            },
+
+            redrawEdge: function () {
+                particleSystem.eachEdge(_.bind(function (edge) {
+                    var transitionId = this.buildTransitionId(edge._id);
+                    if (!this.getGraph().getCell(transitionId)) {
+                        var transitionConfig = _.clone(this.defaultTransitionConfig);
+                        var sourceNode = this.getCellByNode(edge.source);
+                        var targetNode = this.getCellByNode(edge.target);
+
+
+                        _.extend(transitionConfig, {
+                            id: transitionId,
+                            source: {
+                                id: sourceNode.id
+                            },
+                            target: {
+                                id: targetNode.id
+                            }
+                        });
+
+                        var transition;
+                        if (transitionConfig.source.id === transitionConfig.target.id) {
+
+                            var box = this.getPaper().findViewByModel(sourceNode).getBBox();
+
+                            transitionConfig['vertices'] = [
+                                {
+                                    x: box.x,
+                                    y: box.y - 50
+                                },
+                                {
+                                    x: box.x + box.width,
+                                    y: box.y - 50
+                                }
+                            ];
+
+                            transition = new joint.shapes.fsa.Arrow(transitionConfig);
+
+                        } else {
+                            transition = new joint.shapes.uml.Transition(transitionConfig);
+                        }
 
 
 
-                particleSystem.eachNode( //теперь каждую вершину
+
+                        this.getGraph().addCell(transition);
+                    }
+                }, this));
+            },
+
+            redrawNode: function () {
+                particleSystem.eachNode(
                     _.bind(function (node, pt) {
                         switch (node.data.type) {
                             case 'initState':
@@ -68,178 +214,56 @@ define([
                                 break;
                             }
                         }
-
                     }, this)
                 );
-
-
-
-                particleSystem.eachEdge(_.bind(function (edge, pt1, pt2) {
-                    var transitionId = 'transition_id_' + edge._id;
-                    if (!this.getGraph().getCell(transitionId)) {
-                        var transitionConfig = {
-                            id: transitionId,
-                            'attrs': {
-                                '.connection': {
-                                    'fill': 'none',
-                                    'stroke-linejoin': 'round',
-                                    'stroke-width': '2',
-                                    'stroke': '#4b4a67'
-                                }
-                            }
-                        };
-                        var source = edge.source;
-                        switch (source.data.type) {
-                            case 'initState':
-                            {
-
-                                console.group('!!!!!!!!!!!!!!!!!!!!!');
-                                console.log(this.getGraph().getCell('initState'));
-                                console.groupEnd();
-
-                                transitionConfig['source'] = {
-                                    'id': this.getGraph().getCell('initState').id
-                                };
-                                break;
-                            }
-                            case 'state':
-                            {
-                                var stateId = source.data.model.get('id');
-                                transitionConfig['source'] = {
-                                    'id': this.getGraph().getCell(stateId).id
-                                };
-                                break;
-                            }
-                            case 'condition':
-                            {
-                                var conditionId = 'condition_id_' +  source._id;
-                                transitionConfig['source'] = {
-                                    'id': this.getGraph().getCell(conditionId).id
-                                };
-                                break;
-                            }
-                        }
-
-
-
-                        var target = edge.target;
-                        switch (target.data.type) {
-                            case 'initState':
-                            {
-                                transitionConfig['target'] = {
-                                    'id': this.getGraph().getCell('initState').id
-                                };
-                                break;
-                            }
-                            case 'state':
-                            {
-
-                                var stateId = target.data.model.get('id');
-                                transitionConfig['target'] = {
-                                    'id': this.getGraph().getCell(stateId).id
-                                };
-                                break;
-                            }
-                            case 'condition':
-                            {
-                                var conditionId = 'condition_id_' +  target._id;
-                                transitionConfig['target'] = {
-                                    'id': this.getGraph().getCell(conditionId).id
-                                };
-                                break;
-                            }
-                        }
-
-
-
-                        console.log(transitionConfig);
-
-
-                        var transition = new joint.shapes.uml.Transition(transitionConfig);
-                        this.getGraph().addCell(transition);
-                    }
-
-                }, this));
-
-
-
-
             },
 
             redrawInitState: function (node, pt) {
-
-                if (!this.getGraph().getCell('initState')) {
+                if (!this.getGraph().getCell(this.buildInitStateId())) {
                     var uml = joint.shapes.uml;
-                    this.getGraph().addCell(new uml.StartState({
-                        id: 'initState',
-                        position: {x: pt.x, y: pt.y},
-                        size: {width: 30, height: 30},
-                        attrs: {
-                            'circle': {
-                                fill: '#4b4a67',
-                                stroke: 'none'
-                            }
-                        }
-                    }));
+                    var startStateConfig = _.clone(this.defaultStartStateConfig);
+                    _.extend(startStateConfig, {
+                        id: this.buildInitStateId(),
+                        position: {x: pt.x, y: pt.y}
+                    });
+                    this.getGraph().addCell(new uml.StartState(startStateConfig));
                 }
                 this.getGraph().getCell('initState').position({x: pt.x, y: pt.y});
             },
-            redrawState: function(node, pt) {
-                var id = node.data.model.get('id');
+
+            redrawState: function (node, pt) {
+                var workflowStepId = node.data.model.get('id');
+                var id = this.buildStateId(workflowStepId);
 
                 if (!this.getGraph().getCell(id)) {
                     var uml = joint.shapes.uml;
-                    this.getGraph().addCell(new uml.State({
+                    var stateConfig = _.clone(this.defaultStateConfig);
+                    _.extend(stateConfig, {
                         id: id,
                         position: {x: pt.x, y: pt.y},
-                        size: { width: 80, height: 30 },
-                        name:  node.data.model.get('name'),
-                        //events: ["entry / create()","exit / kill()"],
-                        attrs: {
-                            '.uml-state-body': {
-                                fill: 'rgba(48, 208, 198, 0.1)',
-                                stroke: 'rgba(48, 208, 198, 0.5)',
-                                'stroke-width': 1.5
-                            },
-                            '.uml-state-separator': {
-                                stroke: 'rgba(48, 208, 198, 0.4)'
-                            }
-                        }
-                    }));
+                        name: node.data.model.get('name')
+                    });
+                    this.getGraph().addCell(new uml.State(stateConfig));
                 }
                 this.getGraph().getCell(id).position({x: pt.x, y: pt.y});
             },
-            redrawCondition: function(node, pt) {
-                var id = 'condition_id_' +  node._id;
+
+            redrawCondition: function (node, pt) {
+                var id = this.buildConditionalBlockId(node._id);
 
                 if (!this.getGraph().getCell(id)) {
                     var erd = joint.shapes.erd;
-                    this.getGraph().addCell(new erd.Relationship({
+
+                    var conditionConfig = _.clone(this.defaultConditionConfig);
+                    _.extend(conditionConfig, {
                         id: id,
-                        position: {x: pt.x, y: pt.y},
-                        attrs: {
-                            text: {
-                                fill: '#ffffff',
-                                text: ' ',
-                                'letter-spacing': 0,
-                                style: {
-                                    'text-shadow':
-                                        '1px 0 1px'
-                                }
-                            },
-                            '.outer': {
-                                fill: 'white',
-                                stroke: 'rgba(48, 208, 198, 0.5)'
-                            }
-                        }
-                    }));
+                        position: {x: pt.x, y: pt.y}
+                    });
+
+                    this.getGraph().addCell(new erd.Relationship(conditionConfig));
                 }
                 this.getGraph().getCell(id).position({x: pt.x, y: pt.y});
             }
-
         }
-        return that;
     }
-
-    return Renderer;
 });

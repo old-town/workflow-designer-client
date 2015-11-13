@@ -24,6 +24,11 @@ define([
                 type: Backbone.Many,
                 key: 'initial-actions',
                 relatedModel: Action
+            },
+            {
+                type: Backbone.Many,
+                key: 'initial-actions',
+                relatedModel: Action
             }
         ],
         urlRoot: function(){

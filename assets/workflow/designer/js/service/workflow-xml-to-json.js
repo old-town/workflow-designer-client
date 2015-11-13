@@ -84,10 +84,9 @@ define(['underscore', 'jquery','jquery-xpath'], function(_, $) {
                 }
                 step['name'] = name;
 
-                var actions = this.parseActionsFromStep(stepEl);
-                if (actions) {
-                    step['actions'] = actions;
-                }
+                var actionsFromStep = this.parseActionsFromStep(stepEl);
+                step['actions'] = actionsFromStep['actions'];
+                step['common-actions'] = actionsFromStep['common-actions'];
 
                 steps.push(step);
             }, this));
@@ -100,7 +99,6 @@ define(['underscore', 'jquery','jquery-xpath'], function(_, $) {
          * Парсинг перехода между шагами
          *
          * @param actionEl
-         * @returns {{unconditional-result: null, results: Array}}
          */
         parseDefaultAction: function(actionEl){
             var action = {
@@ -143,7 +141,10 @@ define(['underscore', 'jquery','jquery-xpath'], function(_, $) {
          * @returns {{}}
          */
         parseActionsFromStep: function(stepEl) {
-            var results = {};
+            var results = {
+                'actions': [],
+                'common-actions': []
+            };
             var actions = [];
             $(stepEl).xpath('.//actions/action').each(_.bind(function(actionIndex, actionEl){
                 var action = this.parseDefaultAction(actionEl);
