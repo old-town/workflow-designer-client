@@ -3,7 +3,7 @@ define([
     'backbone',
     'backbone-associations'
 ], function(_, Backbone) {
-    var ResultDescriptor = Backbone.AssociatedModel.extend({
+    return Backbone.AssociatedModel.extend({
         defaults: {
             'old-status': null,
             'status': null,
@@ -16,5 +16,4 @@ define([
             'display-name': null
         }
     });
-    return ResultDescriptor;
 });

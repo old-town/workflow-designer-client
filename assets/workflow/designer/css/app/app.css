@@ -12,3 +12,8 @@ html, body {
     min-height: 100%;
 }
 
+.workflow-designer-layout {
+    margin-top: 50px;
+    margin-bottom: 50px;
+}
+

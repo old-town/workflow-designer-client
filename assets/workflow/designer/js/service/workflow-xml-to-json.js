@@ -17,7 +17,9 @@ define(['underscore', 'jquery','jquery-xpath'], function(_, $) {
         parse: function(data){
             var parsed = {
                 'steps': [],
-                'initial-actions': []
+                'initial-actions': [],
+                'splits': [],
+                'joins': []
             };
             var steps = this.parseSteps(data);
             if (!steps) {
@@ -33,10 +35,71 @@ define(['underscore', 'jquery','jquery-xpath'], function(_, $) {
             }
             parsed['initial-actions'] = actions;
 
+            parsed['splits'] = this.parseSplits(data);
+            parsed['joins'] = this.parseJoins(data);
+
             console.group('workflow-json');
             console.log(parsed);
             console.groupEnd();
             return parsed;
+        },
+        parseSplits: function(data) {
+            var splits = [];
+            $(data).xpath('.//splits/split').each(_.bind(function(index, splitEl){
+                var split = this.parseSplit(splitEl);
+                splits.push(split);
+            }, this));
+            return splits;
+        },
+        parseJoins: function(data) {
+            var joins = [];
+            $(data).xpath('.//joins/join').each(_.bind(function(index, joinEl){
+                var join = this.parseJoin(joinEl);
+                joins.push(join);
+            }, this));
+            return joins;
+        },
+
+        parseJoin: function(joinEl) {
+            var join = {
+                'unconditional-result': null,
+                'id': null
+            };
+
+            var id = $(joinEl).attr('id');
+            if (!id) {
+                throw new Error('attribute id not exists');
+            }
+            join['id'] = id;
+
+            var unconditionalResults = this.parseUnconditionalResults(joinEl);
+            if (1 !== unconditionalResults.length) {
+                throw new Error('unconditional result not valid');
+            }
+            join['unconditional-result'] = unconditionalResults[0];
+
+            return join;
+        },
+
+        parseSplit: function(splitEl) {
+            var split = {
+                'unconditional-results': [],
+                'id': null
+            };
+
+            var id = $(splitEl).attr('id');
+            if (!id) {
+                throw new Error('attribute id not exists');
+            }
+            split['id'] = id;
+
+            var unconditionalResults = this.parseUnconditionalResults(splitEl);
+            if (0 === unconditionalResults.length) {
+                throw new Error('unconditional result not exists');
+            }
+            split['unconditional-results'] = unconditionalResults;
+
+            return split;
         },
         /**
          *
@@ -118,11 +181,11 @@ define(['underscore', 'jquery','jquery-xpath'], function(_, $) {
 
             }
             var unconditionalResult = this.parseUnconditionalResults(actionEl);
-            if (!unconditionalResult) {
+            if (1 !== unconditionalResult.length) {
                 throw new Error('unconditional result not exists');
 
             }
-            action['unconditional-result'] = unconditionalResult;
+            action['unconditional-result'] = unconditionalResult[0];
 
 
             var results = this.parseResult(actionEl);
@@ -176,21 +239,20 @@ define(['underscore', 'jquery','jquery-xpath'], function(_, $) {
         /**
          * Парсинг блока с безусловным переходом
          *
-         * @param actionEl
+         * @param el
          * @returns {*}
          */
-        parseUnconditionalResults: function(actionEl)
+        parseUnconditionalResults: function(el)
         {
-            var unconditionalResult = null;
-            var unconditionalResultElCollections = $(actionEl).xpath('.//unconditional-result');
-            if (1 === unconditionalResultElCollections.length) {
-                var unconditionalResultEl = $(unconditionalResultElCollections[0]);
+            var unconditionalResults = [];
+            $(el).xpath('.//unconditional-result').each(_.bind(function(index, currentEl){
+                var unconditionalResultEl = $(currentEl);
                 var oldStatus = unconditionalResultEl.attr('old-status');
                 if (!oldStatus) {
                     throw new Error('old-status  not exists');
 
                 }
-                unconditionalResult = {
+                var unconditionalResult = {
                     'old-status': oldStatus,
                     'status': unconditionalResultEl.attr('status'),
                     'step': unconditionalResultEl.attr('step'),
@@ -201,8 +263,11 @@ define(['underscore', 'jquery','jquery-xpath'], function(_, $) {
                     'id': unconditionalResultEl.attr('id'),
                     'display-name': unconditionalResultEl.attr('display-name')
                 };
-            }
-            return unconditionalResult;
+
+                unconditionalResults.push(unconditionalResult);
+            }, this));
+
+            return unconditionalResults;
         },
         /**
          * Парсинг блока с условным переходом

@@ -14,7 +14,7 @@ define([], function() {
                 'joint': 'libs/joint/joint',
                 'conf': 'conf',
                 'arbor': 'libs/arbor/arbor',
-                'uuid': 'libs/uuid-js/uuid'
+                'dagre': 'libs/dagre/dagre'
             },
             map: {
                 '*': {

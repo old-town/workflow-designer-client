@@ -3,204 +3,261 @@ define([
     'underscore',
     'backbone',
     'joint',
-    'arbor',
-    'views/uml-state-machine-renderer',
+    'service/state-machine-graph-builder',
+    'views/uml-state-machine-config',
     'text!templates/uml-state-machine-view.html'
-], function ($, _, Backbone, joint, arbor, Renderer, umlStateMachineView) {
+], function ($, _, Backbone, joint, StateMachineGraphBuilder, conf, umlStateMachineView) {
     return Backbone.View.extend({
+
+        viewGraph: null,
+        paper: null,
         tagName: 'div',
         model: null,
-        graph: null,
+
         template: _.template(umlStateMachineView),
         paperElSelector: '.paper',
-        graphEngine: null,
-        renderer: null,
         className: 'graph-viewport',
-        addedState: {},
 
-        getWidth: function () {
-            return this.width;
-        },
-
-        getHeight: function () {
-            return this.height;
-        },
-
-        getGraphEngine: function () {
-            if (this.graphEngine) {
-                return this.graphEngine;
-            }
-            this.graphEngine = arbor.ParticleSystem(10000000, 512, 1, true);
-            var elRender = $(this.paperElSelector, $(this.el));
-            //this.graphEngine.parameters({gravity:true});
-            this.graphEngine.renderer = Renderer(elRender);
-
-            return this.graphEngine;
-        },
 
         drawUml: function () {
-            this.initUmlStateMachine();
-            this.initTransition();
-        },
-
-        initUmlStateMachine: function () {
-
-            var sys = this.getGraphEngine();
-
-            sys.addNode('initState', {
-                'type': 'initState'
+            var stateMachineGraphBuilder = new StateMachineGraphBuilder({
+                model: this.model
             });
-            //this.model.get('initial-actions').each(_.bind(this.initCondition, this, 5));
 
-            this.addedState = {};
+            var graph = stateMachineGraphBuilder.buildGraph();
 
-            this.model.get('initial-actions').each(_.bind(this.addStepByAction, this));
+            this.renderGraph(graph);
 
-
-            this.model.get('steps').each(_.bind(function(step){
-                if (!this.addedState[step.get('id')]) {
-                    sys.addNode(step.get('name'), {
-                        'type': 'state',
-                        'model': step,
-                        mass: 0.4,
-                        fixed: true
-                    });
-                }
-
-
-
-
-
-
-            }, this));
-
-
-
-            //
-            //this.model.get('steps').each(_.bind(function(step){
-            //
-            //    step.get('actions').each(_.bind(this.initCondition, this, 0.4));
-            //
-            //    sys.addNode(step.get('name'), {
-            //        'type': 'state',
-            //        'model': step,
-            //        mass: 0.4,
-            //        fixed: true
-            //    });
-            //
-            //}, this));
-
-            return this;
         },
-        addStepByAction: function(action) {
-            this.initCondition(0.4, action);
-
-            action.get('results').each(_.bind(function (result) {
-                var stepId = result.get('step');
-                if (stepId && _.isUndefined(this.addedState[stepId])) {
-                    var step = this.model.get('steps').get(stepId);
-                    this.getGraphEngine().addNode(step.get('name'), {
-                        'type': 'state',
-                        'model': step,
-                        mass: 0.4,
-                        fixed: true
-                    });
-
-                    this.addedState[stepId] = stepId;
-                    this.addStepByParentStep(step);
-
-                }
-
-            }, this));
 
 
-            var unconditionalResultStepId = action.get('unconditional-result').get('step');
-            if (unconditionalResultStepId && _.isUndefined(this.addedState[unconditionalResultStepId])) {
-                var step = this.model.get('steps').get(unconditionalResultStepId);
-                this.getGraphEngine().addNode(step.get('name'), {
-                    'type': 'state',
-                    'model': step,
-                    mass: 0.4,
-                    fixed: true
-                });
+        renderGraph: function(graph) {
+            graph.nodes().forEach(_.bind(this.renderGraphNode, this, graph));
 
-                this.addedState[unconditionalResultStepId] = unconditionalResultStepId;
-                this.addStepByParentStep(step);
+            graph.edges().forEach(_.bind(this.renderEdge, this, graph));
+        },
+
+
+
+        getViewGraph: function () {
+            if (this.viewGraph) {
+                return this.viewGraph;
             }
 
+            var elRender = $(this.paperElSelector, $(this.el));
+
+            this.viewGraph = new joint.dia.Graph();
+
+            this.paper = new joint.dia.Paper({
+                el: elRender,
+                width: elRender.width(),
+                //height: elRender.height(),
+                height: 2000,
+                gridSize: 1,
+                model: this.viewGraph
+            });
+
+            return this.viewGraph;
 
         },
-        addStepByParentStep: function(parentStep) {
-            parentStep.get('actions').each(_.bind(this.addStepByAction, this));
+
+        getPaper: function() {
+            if (this.paper) {
+                return this.paper;
+            }
+            this.getViewGraph();
+
+            return this.paper;
         },
 
 
+        renderGraphNode: function(graph, v) {
 
-        initCondition: function (mass, action) {
-            if (action.get('results').length > 0) {
-                var conditionName = this.buildConditionName(action);
-                this.getGraphEngine().addNode(conditionName, {
-                    'type': 'condition',
-                    mass: mass
-                });
+
+
+            var vData = graph.node(v);
+            //console.log("Node " + v + ": " + JSON.stringify(this.getGraph().node(v)));
+
+            console.log(vData.type);
+
+            switch (vData.type) {
+                case conf.initStateNodeType:
+                {
+                    this.redrawInitState(graph, v);
+                    break;
+                }
+                case conf.stepNodeType:
+                {
+                    this.redrawState(graph, v);
+                    break;
+                }
+                case conf.conditionNodeType:
+                {
+                    this.redrawCondition(graph, v);
+                    break;
+                }
+                case conf.splitNodeType:
+                {
+                    this.redrawSplit(graph, v);
+                    break;
+                }
+                case conf.joinNodeType:
+                {
+                    this.redrawJoin(graph, v);
+                    break;
+                }
             }
         },
 
-        initTransition: function () {
-            this.initInitialActionTransitions();
-            this.initStateTransition();
-        },
+        renderEdge: function(graph, e) {
+            //console.log("Edge " + e.v + " -> " + e.w + ": " + JSON.stringify(this.getGraph().edge(e)));
 
-        initStateTransition: function () {
-            this.model.get('steps').each(_.bind(function (step) {
-                var source = this.getGraphEngine().getNode(step.get('name'));
-                step.get('actions').each(_.bind(this.initEdge, this, source));
-            }, this));
-        },
+            var eData = graph.edge(e);
 
-        initInitialActionTransitions: function () {
-            var sys = this.getGraphEngine();
-            var initStateNode = sys.getNode('initState');
-            this.model.get('initial-actions').each(_.bind(this.initEdge, this, initStateNode));
-        },
+            var sourceNode = this.getViewGraph().getCell(e.v);
+            var targetNode = this.getViewGraph().getCell(e.w);
 
-        initEdge: function (source, action) {
-            var sys = this.getGraphEngine();
-            var sourceForUnconditionalEdge;
-            if (action.get('results').length > 0) {
-                var conditionName = this.buildConditionName(action);
-                var conditionNode = sys.getNode(conditionName);
-                sys.addEdge(source, conditionNode);
-                action.get('results').each(_.bind(this.addEdgeByResult, this, conditionNode));
-                sourceForUnconditionalEdge = conditionNode;
+            var transitionName = this.buildTransitionName(e.v, e.w);
+
+            var transitionConfig = _.clone(conf.defaultTransitionConfig);
+            _.extend(transitionConfig, {
+                id: transitionName,
+                source: {
+                    id: sourceNode.id
+                },
+                target: {
+                    id: targetNode.id
+                }
+            });
+
+            var transition;
+            if (transitionConfig.source.id === transitionConfig.target.id) {
+
+                var box = this.getPaper().findViewByModel(sourceNode).getBBox();
+
+                transitionConfig['vertices'] = [
+                    {
+                        x: box.x + box.width+30,
+                        y: box.y - 10
+                    },
+                    {
+                        x: box.x + box.width+30,
+                        y: box.y + 10
+                    }
+                ];
+
+                transition = new joint.shapes.fsa.Arrow(transitionConfig);
+
             } else {
-                sourceForUnconditionalEdge = source;
+                if (eData.points.length > 2) {
+                    transitionConfig['vertices'] = [];
+                    for (var i = 1, maxI = eData.points.length - 1; i < maxI; i++) {
+                        var currentPoint = eData.points[i];
+                        transitionConfig['vertices'].push(currentPoint);
+
+                    }
+                }
+
+                transition = new joint.shapes.fsa.Arrow(transitionConfig);
             }
 
-            var unconditionalResult = action.get('unconditional-result');
-            this.addEdgeByResult(sourceForUnconditionalEdge, unconditionalResult);
+
+            this.getViewGraph().addCell(transition);
+
         },
 
-        addEdgeByResult: function (source, result) {
-            var sys = this.getGraphEngine();
+        redrawInitState: function(graph, v) {
+            var vData = graph.node(v);
 
-            if (!result) {
-                console.log(source);
+            if (!this.getViewGraph().getCell(v)) {
+
+                var uml = joint.shapes.uml;
+                var startStateConfig = _.clone(conf.defaultStartStateConfig);
+                _.extend(startStateConfig, {
+                    id: v,
+                    position: {x: vData.x, y: vData.y}
+                });
+                this.getViewGraph().addCell(new uml.StartState(startStateConfig));
             }
+            this.getViewGraph().getCell(v).position({x: vData.x, y: vData.y});
 
+        },
 
-            var stepId = result.get('step');
-            if (stepId) {
-                var stepName = this.model.get('steps').get(stepId).get('name');
-                var stepNode = sys.getNode(stepName);
-                sys.addEdge(source, stepNode);
-
+        redrawState: function(graph, v) {
+            var vData = graph.node(v);
+            if (!this.getViewGraph().getCell(v)) {
+                var uml = joint.shapes.uml;
+                var stateConfig = _.clone(conf.defaultStateConfig);
+                _.extend(stateConfig, {
+                    id: v,
+                    position: {x: vData.x, y: vData.y},
+                    name: vData.metadata.model.get('name')
+                });
+                this.getViewGraph().addCell(new uml.State(stateConfig));
             }
+            this.getViewGraph().getCell(v).position({x: vData.x, y: vData.y});
         },
 
-        buildConditionName: function (action) {
-            return 'condition_for_action_id_' + action.get('id');
+        redrawCondition: function(graph, v) {
+
+            var vData = graph.node(v);
+
+            if (!this.getViewGraph().getCell(v)) {
+                var erd = joint.shapes.erd;
+
+                var conditionConfig = _.clone(conf.defaultConditionConfig);
+                _.extend(conditionConfig, {
+                    id: v,
+                    position: {x: vData.x, y: vData.y}
+                });
+
+                this.getViewGraph().addCell(new erd.Relationship(conditionConfig));
+            }
+            this.getViewGraph().getCell(v).position({x: vData.x, y: vData.y});
         },
+
+        redrawSplit: function(graph, v) {
+            var vData = graph.node(v);
+
+            if (!this.getViewGraph().getCell(v)) {
+                var devs = joint.shapes.pn;
+
+                var splitConfig = _.clone(conf.defaultSplitConfig);
+                _.extend(splitConfig, {
+                    id: v,
+                    position: {x: vData.x, y: vData.y}
+                });
+                //splitConfig['attrs']['.label']['text'] =  'split_id:' + vData.metadata.model.get('id');
+
+
+                this.getViewGraph().addCell(new devs.Place(splitConfig));
+            }
+            this.getViewGraph().getCell(v).position({x: vData.x, y: vData.y});
+
+        },
+
+        redrawJoin: function(graph, v) {
+            var vData = graph.node(v);
+
+            if (!this.getViewGraph().getCell(v)) {
+                var devs = joint.shapes.pn;
+
+                var joinConfig = _.clone(conf.defaultJoinConfig);
+                _.extend(joinConfig, {
+                    id: v,
+                    position: {x: vData.x, y: vData.y}
+                });
+                //splitConfig['attrs']['.label']['text'] =  'split_id:' + vData.metadata.model.get('id');
+
+                this.getViewGraph().addCell(new devs.Place(joinConfig));
+            }
+            this.getViewGraph().getCell(v).position({x: vData.x, y: vData.y});
+        },
+
+        buildTransitionName: function(sourceNodeName, targetNodeName) {
+            return sourceNodeName + '-' + targetNodeName;
+        },
+
 
         render: function () {
             $(this.el).html(this.template());

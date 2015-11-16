@@ -27,9 +27,8 @@ return [
                             'workflow/designer/js/libs/lodash/*',
                             'workflow/designer/js/libs/joint/*',
 
-                            'workflow/designer/js/libs/arbor/*',
+                            'workflow/designer/js/libs/dagre/*',
 
-                            'workflow/designer/js/libs/uuid-js/*',
 
 
 

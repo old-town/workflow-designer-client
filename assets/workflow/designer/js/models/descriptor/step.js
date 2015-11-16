@@ -5,7 +5,7 @@ define([
     'models/descriptor/common-action',
     'backbone-associations'
 ], function(_, Backbone, Action, CommonAction) {
-    var StepDescriptor = Backbone.AssociatedModel.extend({
+    return Backbone.AssociatedModel.extend({
         defaults: {
             'id': null,
             'name': null,
@@ -25,5 +25,4 @@ define([
             }
         ]
     });
-    return StepDescriptor;
 });

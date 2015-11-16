@@ -5,11 +5,13 @@ define([
     'service/workflow-xml-to-json',
     'models/descriptor/step',
     'models/descriptor/action',
+    'models/descriptor/split',
+    'models/descriptor/join',
     'jquery',
     'jquery-xpath',
     'backbone-associations'
-], function(_, Backbone, conf, Parser, Step, Action) {
-    var WorkflowDescriptor = Backbone.AssociatedModel.extend({
+], function(_, Backbone, conf, Parser, Step, Action, Split, Join) {
+    return Backbone.AssociatedModel.extend({
         defaults: {
             steps: [],
             'initial-actions': []
@@ -27,8 +29,13 @@ define([
             },
             {
                 type: Backbone.Many,
-                key: 'initial-actions',
-                relatedModel: Action
+                key: 'splits',
+                relatedModel: Split
+            },
+            {
+                type: Backbone.Many,
+                key: 'joins',
+                relatedModel: Join
             }
         ],
         urlRoot: function(){
@@ -42,8 +49,7 @@ define([
         },
         parse: function(data) {
             var parser = new Parser();
-            var parsedResult = parser.parse(data);
-            return parsedResult;
+            return parser.parse(data);
         },
         fetch: function (options) {
             options = options || {};
@@ -51,5 +57,4 @@ define([
             return Backbone.AssociatedModel.prototype.fetch.call(this, options);
         }
     });
-    return WorkflowDescriptor;
 });
