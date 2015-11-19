@@ -23,17 +23,14 @@ define([
         };
 
         var viewWorkflow = function(workflowManager, workflowName) {
-            //$(appView.el).empty();
-
-            //console.log($(appView.umlLayoutSelector, this.el));
-
-            new UmlStateMachineView({
+            var view = new UmlStateMachineView({
                 el: $(appView.umlLayoutSelector, appView.el)
             });
+            view.render();
+            view.model.loadWorkflow(workflowManager, workflowName);
         };
         router.on('route:root', routeRootHandler);
         router.on('route:viewWorkflow', viewWorkflow);
-
 
         Backbone.history.start();
     };

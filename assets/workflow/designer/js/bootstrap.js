@@ -51,6 +51,7 @@ define([], function() {
 
         require.config(configRequire);
     };
+
     bootstrap.init = function(config) {
         var conf = typeof config === 'object' ? config : {};
         this.initRequireConfig(conf);

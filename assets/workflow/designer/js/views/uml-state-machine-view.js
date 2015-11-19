@@ -5,9 +5,7 @@ define([
     'joint',
     'service/state-machine-graph-builder',
     'views/uml-state-machine-config',
-
     'models/descriptor/workflow',
-
     'text!templates/uml-state-machine-view.html'
 ], function ($, _, Backbone, joint, StateMachineGraphBuilder, conf, WorkflowDescriptor, umlStateMachineView) {
     return Backbone.View.extend({
@@ -22,22 +20,13 @@ define([
         className: 'graph-viewport',
 
         initialize: function() {
+            this.model = new WorkflowDescriptor();
+            WorkflowDescriptor.prototype.bind('sync', _.bind(this.drawUml, this));
 
-            WorkflowDescriptor.prototype.bind('sync', this.drawUml);
-            var model = new WorkflowDescriptor();
-            model.fetch();
         },
 
-        //renderWorkflowDescriptor: function(model) {
-        //    var view = new UmlStateMachineView({
-        //        'model': model
-        //    });
-        //    $(this.el).empty();
-        //    $('.uml-layout', this.el).append(view.render().el);
-        //    view.drawUml();
-        //},
-
         drawUml: function () {
+            console.log(this.el);
 
 
             var stateMachineGraphBuilder = new StateMachineGraphBuilder({
@@ -50,14 +39,11 @@ define([
 
         },
 
-
         renderGraph: function(graph) {
             graph.nodes().forEach(_.bind(this.renderGraphNode, this, graph));
 
             graph.edges().forEach(_.bind(this.renderEdge, this, graph));
         },
-
-
 
         getViewGraph: function () {
             if (this.viewGraph) {
@@ -92,13 +78,7 @@ define([
 
 
         renderGraphNode: function(graph, v) {
-
-
-
             var vData = graph.node(v);
-            //console.log("Node " + v + ": " + JSON.stringify(this.getGraph().node(v)));
-
-            console.log(vData.type);
 
             switch (vData.type) {
                 case conf.initStateNodeType:
