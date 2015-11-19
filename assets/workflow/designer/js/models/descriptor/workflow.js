@@ -39,7 +39,7 @@ define([
             }
         ],
         urlRoot: function(){
-            return conf.restBaseUrl +  "v1/rest/workflow-descriptor/" + 1;
+            return conf.restBaseUrl +  "v1/rest/workflow-manager/manager_for_test/workflow-name/test?XDEBUG_SESSION=XDEBUG_ECLIPSE";
 
             //if (this.isNew()){
             //    return conf.restBaseUrl +  "v1/rest/workflow-descriptor";

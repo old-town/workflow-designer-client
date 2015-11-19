@@ -20,5 +20,6 @@ class WorkflowDesignerController extends AbstractActionController
      */
     public function appAction()
     {
+
     }
 }

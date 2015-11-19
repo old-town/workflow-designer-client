@@ -5,8 +5,11 @@ define([
     'joint',
     'service/state-machine-graph-builder',
     'views/uml-state-machine-config',
+
+    'models/descriptor/workflow',
+
     'text!templates/uml-state-machine-view.html'
-], function ($, _, Backbone, joint, StateMachineGraphBuilder, conf, umlStateMachineView) {
+], function ($, _, Backbone, joint, StateMachineGraphBuilder, conf, WorkflowDescriptor, umlStateMachineView) {
     return Backbone.View.extend({
 
         viewGraph: null,
@@ -18,8 +21,25 @@ define([
         paperElSelector: '.paper',
         className: 'graph-viewport',
 
+        initialize: function() {
+
+            WorkflowDescriptor.prototype.bind('sync', this.drawUml);
+            var model = new WorkflowDescriptor();
+            model.fetch();
+        },
+
+        //renderWorkflowDescriptor: function(model) {
+        //    var view = new UmlStateMachineView({
+        //        'model': model
+        //    });
+        //    $(this.el).empty();
+        //    $('.uml-layout', this.el).append(view.render().el);
+        //    view.drawUml();
+        //},
 
         drawUml: function () {
+
+
             var stateMachineGraphBuilder = new StateMachineGraphBuilder({
                 model: this.model
             });
