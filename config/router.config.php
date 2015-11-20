@@ -10,31 +10,31 @@ use OldTown\Workflow\Designer\Client\Controller\WorkflowDesignerController;
 return [
     'router' => [
         'routes' => [
-            'workflow-designer' => [
-                'type' => 'Literal',
-                'options' => [
-                    'route' => '/workflow/designer/',
-                ],
-                'may_terminate' => true,
+            'workflow' => [
                 'child_routes' => [
-                    'view' => [
-                        'type' => 'Literal',
-                        'options' => [
-                            'route' => 'app',
-                            'defaults' => [
-                                'controller' => WorkflowDesignerController::class,
-                                'action' => 'app'
+                    'designer' => [
+                        'child_routes' => [
+                            'view' => [
+                                'type' => 'Literal',
+                                'options' => [
+                                    'route' => 'app',
+                                    'defaults' => [
+                                        'controller' => WorkflowDesignerController::class,
+                                        'action' => 'app'
+                                    ]
+                                ],
+                            ],
+                            'api' => [
+                                'type' => 'Literal',
+                                'options' => [
+                                    'route' => 'api/',
+                                ]
                             ]
-                        ],
-                    ],
-                    'api' => [
-                        'type' => 'Literal',
-                        'options' => [
-                            'route' => 'api/',
                         ]
                     ]
                 ]
             ],
+
             'assets-workflow-designer' => [
                 'type' => 'Literal',
                 'options' => [
