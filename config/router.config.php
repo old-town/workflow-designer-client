@@ -21,14 +21,9 @@ return [
                                     'defaults' => [
                                         'controller' => WorkflowDesignerController::class,
                                         'action' => 'app'
-                                    ]
+                                    ],
+                                    'may_terminate' => true
                                 ],
-                            ],
-                            'api' => [
-                                'type' => 'Literal',
-                                'options' => [
-                                    'route' => 'api/',
-                                ]
                             ]
                         ]
                     ]
