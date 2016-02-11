@@ -14,6 +14,9 @@ use Zend\Test\PHPUnit\Controller\AbstractHttpControllerTestCase;
  */
 class ModuleTest extends AbstractHttpControllerTestCase
 {
+    /**
+     * Проверка того что модуль загружается
+     */
     public function testLoadModule()
     {
         /** @noinspection PhpIncludeInspection */

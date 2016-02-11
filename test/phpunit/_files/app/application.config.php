@@ -1,6 +1,7 @@
 <?php
 return array(
     'modules' => array(
+        'OldTown\\Workflow\\ZF2',
         'AsseticBundle',
         'OldTown\\Workflow\\Designer\\Client'
     ),
