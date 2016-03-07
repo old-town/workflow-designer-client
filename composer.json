@@ -42,7 +42,7 @@
     "zendframework/zend-version": "~2.4.0",
     "zendframework/zend-text": "~2.4.0",
     "satooshi/php-coveralls": "~1.0.0",
-    "behat/behat": "~3.0.0",
+    "behat/behat": "~3.0.15",
     "behat/mink-extension": "~2.1.0",
     "behat/mink-goutte-driver": "~1.1.0",
     "behat/mink-selenium2-driver": "~1.2.0"
