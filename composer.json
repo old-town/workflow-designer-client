@@ -25,13 +25,13 @@
     "zendframework/zend-modulemanager": "~2.4.0",
     "zendframework/zend-mvc": "~2.4.0",
     "zendframework/zend-servicemanager": "~2.4.0",
-    "widmogrod/zf2-assetic-module": "1.*"
+    "widmogrod/zf2-assetic-module": "~1.5.0"
   },
   "require-dev": {
     "ext-curl": "*",
-    "fabpot/php-cs-fixer": "1.9.1",
-    "phpunit/phpunit": "4.7.7",
-    "phpunit/phpcov": "2.0.1",
+    "fabpot/php-cs-fixer": "~1.11.0",
+    "phpunit/phpunit": "~4.8.0",
+    "phpunit/phpcov": "~2.0.0",
     "zendframework/zend-loader": "~2.4.0",
     "zendframework/zend-test": "~2.4.0",
     "zendframework/zend-serializer": "~2.4.0",
@@ -41,11 +41,11 @@
     "zendframework/zend-config": "~2.4.0",
     "zendframework/zend-version": "~2.4.0",
     "zendframework/zend-text": "~2.4.0",
-    "satooshi/php-coveralls": "dev-master",
-    "behat/behat": "~3.0",
-    "behat/mink-extension": "~2.1",
-    "behat/mink-goutte-driver": "~1.1",
-    "behat/mink-selenium2-driver": "~1.2"
+    "satooshi/php-coveralls": "~1.0.0",
+    "behat/behat": "~3.0.0",
+    "behat/mink-extension": "~2.1.0",
+    "behat/mink-goutte-driver": "~1.1.0",
+    "behat/mink-selenium2-driver": "~1.2.0"
   },
   "repositories": [
     {
