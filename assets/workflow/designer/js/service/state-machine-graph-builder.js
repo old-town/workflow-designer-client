@@ -50,6 +50,7 @@ define([
         addNodeByResult: function(startNodeName, result) {
             var stepId = result.get('step');
             if (stepId) {
+                var stepNodeName = -1 == stepId ? startNodeName : this.buildStepName(stepId);
                 var stepNodeName = this.buildStepName(stepId);
                 if (!this.getGraph().hasNode(stepNodeName)) {
                     var step = this.model.get('steps').get(stepId);
