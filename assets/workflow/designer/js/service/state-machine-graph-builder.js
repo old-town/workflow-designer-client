@@ -56,10 +56,10 @@ define([
 
         },
 
-        addNodeByResult: function(startNodeName, result) {
+        addNodeByResult: function(startNodeName, nodeTransitionWithItself, result) {
             var stepId = result.get('step');
             if (stepId) {
-                var stepNodeName = -1 == stepId ? startNodeName : this.buildStepName(stepId);
+                var stepNodeName = -1 == stepId ? nodeTransitionWithItself : this.buildStepName(stepId);
                 if (!this.getGraph().hasNode(stepNodeName)) {
                     var step = this.model.get('steps').get(stepId);
                     this.getGraph().setNode(
@@ -94,7 +94,7 @@ define([
                             conf.defaultSplitConfig.size
                         )
                     );
-                    split.get('unconditional-results').each(_.bind(this.addNodeByResult, this, splitNodeName));
+                    split.get('unconditional-results').each(_.bind(this.addNodeByResult, this, splitNodeName, null));
                 }
                 this.getGraph().setEdge(startNodeName, splitNodeName);
             }
@@ -116,18 +116,15 @@ define([
                         )
                     );
 
-                    this.addNodeByResult(joinNodeName, join.get('unconditional-result'));
+                    this.addNodeByResult(joinNodeName, null, join.get('unconditional-result'));
                 }
 
                 this.getGraph().setEdge(startNodeName, joinNodeName);
             }
-
-
-
         },
 
         buildNodeByAction: function(startNodeName, action) {
-            var conditionNodeName = this.buildConditionNode(action);
+            var conditionNodeName = this.buildConditionNode(action, startNodeName);
             var currentStartNodeName = startNodeName;
             if (conditionNodeName) {
                 this.getGraph().setEdge(startNodeName, conditionNodeName);
@@ -135,14 +132,14 @@ define([
             }
 
             if (conditionNodeName) {
-                action.get('results').each(_.bind(this.addNodeByResult, this, currentStartNodeName));
+                action.get('results').each(_.bind(this.addNodeByResult, this, currentStartNodeName, startNodeName));
             }
 
             var unconditionalResult = action.get('unconditional-result');
-            this.addNodeByResult(currentStartNodeName, unconditionalResult);
+            this.addNodeByResult(currentStartNodeName, startNodeName, unconditionalResult);
         },
 
-        buildConditionNode: function (action) {
+        buildConditionNode: function (action, startNodeName) {
             var flag = false;
             var defaultValue;
             var conditionNodeName;
@@ -169,7 +166,7 @@ define([
             }
 
             if (flag) {
-                conditionNodeName = this.buildConditionName(action);
+                conditionNodeName = this.buildConditionName(action, startNodeName);
                 this.getGraph().setNode(conditionNodeName, _.extend({type: conf.conditionNodeType}, conf.defaultConditionConfig.size));
             }
 
@@ -177,8 +174,8 @@ define([
         },
 
 
-        buildConditionName: function (action) {
-            return 'condition_for_action_id_' + action.get('id');
+        buildConditionName: function (action, startNodeName) {
+            return startNodeName + 'condition_for_action_id_' + action.get('id');
         },
 
         buildInitStateName: function () {
