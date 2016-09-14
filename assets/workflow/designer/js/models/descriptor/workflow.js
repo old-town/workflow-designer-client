@@ -36,6 +36,11 @@ define([
             },
             {
                 type: Backbone.Many,
+                key: 'common-actions',
+                relatedModel: Action
+            },
+            {
+                type: Backbone.Many,
                 key: 'splits',
                 relatedModel: Split
             },
