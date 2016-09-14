@@ -42,9 +42,18 @@ define([
             return this.getGraph();
         },
 
-
         addNodeByParentStep: function(startNodeName, parentStep) {
             parentStep.get('actions').each(_.bind(this.buildNodeByAction, this, startNodeName));
+
+            parentStep.get('common-actions').each(_.bind(function(startNodeName, commonAction) {
+                var commonActionId = commonAction.get('id');
+                var commonActionModel = this.model.get('common-actions').get(commonActionId);
+
+                this.buildNodeByAction(startNodeName, commonActionModel);
+
+            }, this, startNodeName));
+
+
         },
 
         addNodeByResult: function(startNodeName, result) {
