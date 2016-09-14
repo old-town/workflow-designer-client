@@ -56,12 +56,10 @@ define([
 
             this.paper = new joint.dia.Paper({
                 el: elRender,
-                width: elRender.width(),
-                //height: elRender.height(),
-                height: 2000,
-                gridSize: 1,
                 model: this.viewGraph
             });
+            this.paper.setOrigin(80, 0);
+            this.paper.setDimensions (elRender.width(), elRender.height());
 
             return this.viewGraph;
 
