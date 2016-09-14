@@ -18,6 +18,7 @@ define(['underscore', 'jquery','jquery-xpath'], function(_, $) {
             var parsed = {
                 'steps': [],
                 'initial-actions': [],
+                'common-actions': [],
                 'splits': [],
                 'joins': []
             };
@@ -34,6 +35,7 @@ define(['underscore', 'jquery','jquery-xpath'], function(_, $) {
                 throw new Error('initial actions not exists');
             }
             parsed['initial-actions'] = actions;
+            parsed['common-actions'] = this.parseCommonActions(data);
 
             parsed['splits'] = this.parseSplits(data);
             parsed['joins'] = this.parseJoins(data);
@@ -118,6 +120,18 @@ define(['underscore', 'jquery','jquery-xpath'], function(_, $) {
 
             return actions;
         },
+
+        parseCommonActions: function(stepEl) {
+            var actions = [];
+            $(stepEl).xpath('.//common-actions/action').each(_.bind(function(actionIndex, actionEl){
+                var action = this.parseDefaultAction(actionEl);
+                actions.push(action);
+            }, this));
+
+            return actions;
+        },
+
+
         /**
          * Парсинг шагов workflow
          *
